@@ -1,0 +1,60 @@
+//Скрипт для подмены стандартных ссылок (ссылки разделов каталога) в интернет-магазине на новые ссылки ЧПУ вида
+
+<script>
+
+      const elementsToUpdate = [
+        {
+          selector: '[data-storepart-uid="229992283482"]',
+          newHref: 'https://house.craft.ru/store/seriya-craft-gs'
+        },
+        {
+          selector: '[data-storepart-uid="171380137902"]',
+          newHref: 'https://house.craft.ru/store/seriya-craft-gs-25'
+        },
+        {
+          selector: '[data-storepart-uid="634646052232"]',
+          newHref: 'https://house.craft.ru/store/seriya-craft-gs-50'
+        },
+      .................
+      .................  
+      ];
+
+    
+    
+    
+    const observer = new MutationObserver((mutationsList, observer) => {
+  // Перебираем все изменения, которые произошли
+  for (const item of elementsToUpdate) {
+    const divElement = document.querySelector(item.selector);
+
+    // Если элемент найден
+    if (divElement) {
+      const aElement = document.createElement('a');
+
+      for (const attr of divElement.attributes) {
+        aElement.setAttribute(attr.name, attr.value);
+      }
+
+      aElement.innerHTML = divElement.innerHTML;
+      aElement.href = item.newHref;
+
+      divElement.replaceWith(aElement);
+      
+    }
+  }
+
+  // Если все элементы найдены и изменены, можно отключить наблюдатель, чтобы сэкономить ресурсы.
+  const allElementsUpdated = elementsToUpdate.every(item => document.querySelector(`a[href="${item.newHref}"]`));
+  if (allElementsUpdated) {
+    observer.disconnect();
+    console.log("Все элементы успешно обновлены.");
+  }
+});
+
+// Начинаем наблюдение за изменениями в теле документа.
+// subtree: true — для отслеживания изменений во всех дочерних элементах.
+// childList: true — для отслеживания добавления/удаления дочерних узлов.
+observer.observe(document.body, { childList: true, subtree: true });
+    
+</script>
+
